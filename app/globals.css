@@ -36,3 +36,13 @@ body {
 .inset-map .leaflet-tile-pane {
   background: transparent !important;
 }
+
+.state-label {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #1f2937;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}

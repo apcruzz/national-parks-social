@@ -38,6 +38,73 @@ const lower48 = filterStates(
 const alaska = filterStates(isAlaska);
 const hawaii = filterStates(isHawaii);
 
+const stateAbbreviations: Record<string, string> = {
+  "01": "AL",
+  "02": "AK",
+  "04": "AZ",
+  "05": "AR",
+  "06": "CA",
+  "08": "CO",
+  "09": "CT",
+  "10": "DE",
+  "11": "DC",
+  "12": "FL",
+  "13": "GA",
+  "15": "HI",
+  "16": "ID",
+  "17": "IL",
+  "18": "IN",
+  "19": "IA",
+  "20": "KS",
+  "21": "KY",
+  "22": "LA",
+  "23": "ME",
+  "24": "MD",
+  "25": "MA",
+  "26": "MI",
+  "27": "MN",
+  "28": "MS",
+  "29": "MO",
+  "30": "MT",
+  "31": "NE",
+  "32": "NV",
+  "33": "NH",
+  "34": "NJ",
+  "35": "NM",
+  "36": "NY",
+  "37": "NC",
+  "38": "ND",
+  "39": "OH",
+  "40": "OK",
+  "41": "OR",
+  "42": "PA",
+  "44": "RI",
+  "45": "SC",
+  "46": "SD",
+  "47": "TN",
+  "48": "TX",
+  "49": "UT",
+  "50": "VT",
+  "51": "VA",
+  "53": "WA",
+  "54": "WV",
+  "55": "WI",
+  "56": "WY",
+  "72": "PR",
+};
+
+const stateLabelPositions: Record<string, [number, number]> = {
+  "09": [41.62, -72.7], // CT
+  "10": [39.05, -75.45], // DE
+  "11": [38.9, -76.95], // DC
+  "24": [39.2, -76.7], // MD
+  "25": [42.15, -71.8], // MA
+  "33": [43.8, -71.4], // NH
+  "34": [40.1, -74.7], // NJ
+  "44": [41.7, -71.55], // RI
+  "50": [44.1, -72.7], // VT
+};
+
 const stateStyle = () => ({
   color: "#444",
   weight: 1,
@@ -71,6 +138,40 @@ function FitInsetBounds({
   return null;
 }
 
+function StateLabels({ data }: { data: FeatureCollection }) {
+  return (
+    <>
+      {data.features.map((feature, index) => {
+        if (!feature.geometry) return null;
+
+        const bounds = L.geoJSON(feature).getBounds();
+        if (!bounds.isValid()) return null;
+
+        const abbreviation =
+          stateAbbreviations[String(feature.id ?? "")] ??
+          feature.properties?.name?.slice(0, 2).toUpperCase();
+        const labelPosition =
+          stateLabelPositions[String(feature.id ?? "")] ?? [
+            bounds.getCenter().lat,
+            bounds.getCenter().lng,
+          ];
+
+        return (
+          <Marker
+            key={`${feature.id ?? feature.properties?.name ?? index}-label`}
+            position={labelPosition}
+            interactive={false}
+            icon={L.divIcon({
+              className: "state-label",
+              html: abbreviation,
+            })}
+          />
+        );
+      })}
+    </>
+  );
+}
+
 function InsetMap({ center, zoom, data, padding }: InsetMapProps) {
   return (
     <div className="h-36 w-44 overflow-visible bg-transparent p-0">
@@ -89,6 +190,7 @@ function InsetMap({ center, zoom, data, padding }: InsetMapProps) {
       >
         <FitInsetBounds data={data} padding={padding} />
         <GeoJSON data={data} style={stateStyle} />
+        <StateLabels data={data} />
       </MapContainer>
     </div>
   );
@@ -98,7 +200,7 @@ export default function USMap() {
   return (
     <div className="relative h-full w-full">
       <MapContainer
-        center={[38, -98.6]}
+        center={[38, -97.5]}
         zoom={5}
         scrollWheelZoom={true}
         zoomControl={false}
@@ -109,6 +211,7 @@ export default function USMap() {
         ]}
       >
         <GeoJSON data={lower48} style={stateStyle} />
+        <StateLabels data={lower48} />
 
         {parks.map((park) => (
           <Marker key={park.name} position={park.position}>
