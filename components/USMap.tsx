@@ -6,12 +6,13 @@ import { GeoJSON, MapContainer, Marker, Popup } from "react-leaflet";
 import { useMap } from "react-leaflet";
 import type { Feature, FeatureCollection } from "geojson";
 import usStates from "@/data/us-states.json";
+import { nationalParks } from "@/lib/parks";
 
-const parks = [
-  { name: "Yosemite", position: [37.8651, -119.5383] as [number, number] },
-  { name: "Yellowstone", position: [44.428, -110.5885] as [number, number] },
-  { name: "Zion", position: [37.2982, -113.0263] as [number, number] },
-];
+// const parks = [
+//   { name: "Yosemite", position: [37.8651, -119.5383] as [number, number] },
+//   { name: "Yellowstone", position: [44.428, -110.5885] as [number, number] },
+//   { name: "Zion", position: [37.2982, -113.0263] as [number, number] },
+// ];
 
 const allStates = usStates as FeatureCollection;
 
@@ -213,7 +214,7 @@ export default function USMap() {
         <GeoJSON data={lower48} style={stateStyle} />
         <StateLabels data={lower48} />
 
-        {parks.map((park) => (
+        {nationalParks.map((park) => (
           <Marker key={park.name} position={park.position}>
             <Popup>{park.name}</Popup>
           </Marker>
