@@ -1,18 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
-import { GeoJSON, MapContainer, Marker, Popup } from "react-leaflet";
-import { useMap } from "react-leaflet";
+import { GeoJSON, MapContainer, Marker, Popup, useMap } from "react-leaflet";
 import type { Feature, FeatureCollection } from "geojson";
 import usStates from "@/data/us-states.json";
 import { nationalParks } from "@/lib/parks";
-
-// const parks = [
-//   { name: "Yosemite", position: [37.8651, -119.5383] as [number, number] },
-//   { name: "Yellowstone", position: [44.428, -110.5885] as [number, number] },
-//   { name: "Zion", position: [37.2982, -113.0263] as [number, number] },
-// ];
 
 const allStates = usStates as FeatureCollection;
 
@@ -95,30 +88,58 @@ const stateAbbreviations: Record<string, string> = {
 };
 
 const stateLabelPositions: Record<string, [number, number]> = {
-  "09": [41.62, -72.7], // CT
-  "10": [39.05, -75.45], // DE
-  "11": [38.9, -76.95], // DC
-  "24": [39.2, -76.7], // MD
-  "25": [42.15, -71.8], // MA
-  "33": [43.8, -71.4], // NH
-  "34": [40.1, -74.7], // NJ
-  "44": [41.7, -71.55], // RI
-  "50": [44.1, -72.7], // VT
+  "09": [41.62, -72.7],
+  "10": [39.05, -75.45],
+  "11": [38.9, -76.95],
+  "24": [39.2, -76.7],
+  "25": [42.15, -71.8],
+  "33": [43.8, -71.4],
+  "34": [40.1, -74.7],
+  "44": [41.7, -71.55],
+  "50": [44.1, -72.7],
 };
 
-const stateStyle = () => ({
-  color: "#444",
-  weight: 1,
-  fillColor: "#d6d3d1",
-  fillOpacity: 1,
-});
+const fullUsCenter: [number, number] = [38, -97.5];
+const fullUsZoom = 5;
+const fullUsBounds = L.latLngBounds(
+  [15, -170],
+  [72, -50]
+);
+const alaskaFocusCenter: [number, number] = [63.5, -158];
+const alaskaFocusZoom = 4.7;
+const alaskaBounds = L.latLngBounds(
+  [50, -180],
+  [72, -128]
+);
 
 type InsetMapProps = {
   center: [number, number];
   zoom: number;
   data: FeatureCollection;
   padding?: [number, number];
+  isActive?: boolean;
+  onClick?: () => void;
 };
+
+function layerHasBounds(layer: L.Layer): layer is L.FeatureGroup | L.Polygon | L.Polyline {
+  return "getBounds" in layer;
+}
+
+function getCollectionBounds(data: FeatureCollection) {
+  return L.geoJSON(data).getBounds();
+}
+
+function getStateStyle(selectedState: string | null) {
+  return (feature?: Feature) => ({
+    color: "#444",
+    weight: feature?.properties?.name === selectedState ? 2 : 1,
+    fillColor:
+      feature?.properties?.name === selectedState
+        ? "#b8d8b8"
+        : "#d6d3d1",
+    fillOpacity: 1,
+  });
+}
 
 function FitInsetBounds({
   data,
@@ -139,6 +160,16 @@ function FitInsetBounds({
   return null;
 }
 
+function UpdateMapBounds({ bounds }: { bounds: L.LatLngBounds }) {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setMaxBounds(bounds);
+  }, [bounds, map]);
+
+  return null;
+}
+
 function StateLabels({ data }: { data: FeatureCollection }) {
   return (
     <>
@@ -151,6 +182,7 @@ function StateLabels({ data }: { data: FeatureCollection }) {
         const abbreviation =
           stateAbbreviations[String(feature.id ?? "")] ??
           feature.properties?.name?.slice(0, 2).toUpperCase();
+
         const labelPosition =
           stateLabelPositions[String(feature.id ?? "")] ?? [
             bounds.getCenter().lat,
@@ -164,7 +196,9 @@ function StateLabels({ data }: { data: FeatureCollection }) {
             interactive={false}
             icon={L.divIcon({
               className: "state-label",
-              html: abbreviation,
+              html: `<div>${abbreviation}</div>`,
+              iconSize: [24, 12],
+              iconAnchor: [12, 6],
             })}
           />
         );
@@ -173,9 +207,22 @@ function StateLabels({ data }: { data: FeatureCollection }) {
   );
 }
 
-function InsetMap({ center, zoom, data, padding }: InsetMapProps) {
+function InsetMap({
+  center,
+  zoom,
+  data,
+  padding,
+  isActive = false,
+  onClick,
+}: InsetMapProps) {
   return (
-    <div className="h-36 w-44 overflow-visible bg-transparent p-0">
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative h-36 w-44 overflow-visible bg-transparent p-0 text-left transition ${
+        isActive ? "opacity-100" : "opacity-100"
+      }`}
+    >
       <MapContainer
         center={center}
         zoom={zoom}
@@ -190,29 +237,120 @@ function InsetMap({ center, zoom, data, padding }: InsetMapProps) {
         className="inset-map h-full w-full border-none bg-transparent outline-none shadow-none"
       >
         <FitInsetBounds data={data} padding={padding} />
-        <GeoJSON data={data} style={stateStyle} />
+        <GeoJSON data={data} style={() => ({
+          color: "#444",
+          weight: 1,
+          fillColor: isActive ? "#b8d8b8" : "#d6d3d1",
+          fillOpacity: 1,
+        })} />
         <StateLabels data={data} />
       </MapContainer>
-    </div>
+    </button>
   );
 }
 
 export default function USMap() {
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const activeBounds =
+    selectedState === "Alaska"
+      ? alaskaBounds
+      : fullUsBounds;
+
+  const focusState = (name: string, bounds: L.LatLngBounds) => {
+    if (!mapRef.current || !bounds.isValid()) return;
+
+    setSelectedState(name);
+    mapRef.current.fitBounds(bounds, { padding: [20, 20] });
+  };
+
+  const focusAlaska = () => {
+    if (!mapRef.current) return;
+
+    setSelectedState("Alaska");
+    mapRef.current.setView(alaskaFocusCenter, alaskaFocusZoom);
+  };
+
+  const resetMap = () => {
+    if (!mapRef.current) return;
+
+    setSelectedState(null);
+    mapRef.current.setView(fullUsCenter, fullUsZoom);
+  };
+
+  const handleStateClick = (feature: Feature, layer: L.Layer) => {
+    const stateName = feature.properties?.name;
+    if (!stateName || !layerHasBounds(layer)) return;
+
+    if (stateName === "Alaska") {
+      focusAlaska();
+      return;
+    }
+
+    focusState(stateName, layer.getBounds());
+  };
+
   return (
     <div className="relative h-full w-full">
+      {selectedState && (
+        <div className="absolute left-6 top-6 z-[500] flex items-center gap-3 rounded-lg bg-white px-4 py-2 shadow">
+          <span>{selectedState}</span>
+          <button
+            type="button"
+            onClick={resetMap}
+            className="rounded border border-[#d6d3d1] px-2 py-1 text-sm"
+          >
+            Back to US
+          </button>
+        </div>
+      )}
+
       <MapContainer
-        center={[38, -97.5]}
-        zoom={5}
+        center={fullUsCenter}
+        zoom={fullUsZoom}
+        ref={mapRef}
         scrollWheelZoom={true}
         zoomControl={false}
         className="h-full w-full bg-[#f5f1ea]"
-        maxBounds={[
-          [15, -170],
-          [72, -50],
-        ]}
+        maxBounds={activeBounds}
       >
-        <GeoJSON data={lower48} style={stateStyle} />
-        <StateLabels data={lower48} />
+        <UpdateMapBounds bounds={activeBounds} />
+        {selectedState !== "Alaska" && (
+          <>
+            <GeoJSON
+              data={lower48}
+              style={getStateStyle(selectedState)}
+              onEachFeature={(feature, layer) => {
+                layer.on({
+                  click: () => handleStateClick(feature, layer),
+                });
+              }}
+            />
+            <GeoJSON
+              data={hawaii}
+              style={getStateStyle(selectedState)}
+              onEachFeature={(feature, layer) => {
+                layer.on({
+                  click: () => handleStateClick(feature, layer),
+                });
+              }}
+            />
+            <StateLabels data={lower48} />
+            <StateLabels data={hawaii} />
+          </>
+        )}
+
+        <GeoJSON
+          data={alaska}
+          style={getStateStyle(selectedState)}
+          onEachFeature={(feature, layer) => {
+            layer.on({
+              click: () => handleStateClick(feature, layer),
+            });
+          }}
+        />
+
+        <StateLabels data={alaska} />
 
         {nationalParks.map((park) => (
           <Marker key={park.name} position={park.position}>
@@ -223,10 +361,23 @@ export default function USMap() {
 
       <div className="pointer-events-none absolute bottom-6 right-6 z-[500] flex flex-col gap-4">
         <div className="pointer-events-auto">
-          <InsetMap center={[63, -152]} zoom={2} data={alaska} padding={[2, 2]} />
+          <InsetMap
+            center={[63, -152]}
+            zoom={2}
+            data={alaska}
+            padding={[2, 2]}
+            isActive={selectedState === "Alaska"}
+            onClick={focusAlaska}
+          />
         </div>
         <div className="pointer-events-auto">
-          <InsetMap center={[20.5, -157.5]} zoom={6} data={hawaii} />
+          <InsetMap
+            center={[20.5, -157.5]}
+            zoom={6}
+            data={hawaii}
+            isActive={selectedState === "Hawaii"}
+            onClick={() => focusState("Hawaii", getCollectionBounds(hawaii))}
+          />
         </div>
       </div>
     </div>
