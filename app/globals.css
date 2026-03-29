@@ -46,3 +46,17 @@ body {
   font-weight: 700;
   text-align: center;
 }
+
+.state-label {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #2f2f2f;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.state-label div {
+  transform: translate(-50%, -50%);
+}
