@@ -111,11 +111,18 @@ const alaskaBounds = L.latLngBounds(
   [50, -180],
   [72, -128]
 );
+const parkIcon = L.icon({
+  iconUrl: "/park-marker.png",
+  iconSize: [28, 28],
+  iconAnchor: [14, 28],
+  popupAnchor: [0, -28],
+});
 
 type InsetMapProps = {
   center: [number, number];
   zoom: number;
   data: FeatureCollection;
+  parks?: typeof nationalParks;
   padding?: [number, number];
   isActive?: boolean;
   onClick?: () => void;
@@ -211,6 +218,7 @@ function InsetMap({
   center,
   zoom,
   data,
+  parks = [],
   padding,
   isActive = false,
   onClick,
@@ -244,6 +252,15 @@ function InsetMap({
           fillOpacity: 1,
         })} />
         <StateLabels data={data} />
+        {parks.map((park) => (
+          <Marker
+            key={`${park.name}-inset`}
+            position={park.position}
+            icon={parkIcon}
+          >
+            <Popup>{park.name}</Popup>
+          </Marker>
+        ))}
       </MapContainer>
     </button>
   );
@@ -252,6 +269,8 @@ function InsetMap({
 export default function USMap() {
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const alaskaParks = nationalParks.filter((park) => park.state.includes("AK"));
+  const hawaiiParks = nationalParks.filter((park) => park.state.includes("HI"));
   const activeBounds =
     selectedState === "Alaska"
       ? alaskaBounds
@@ -353,7 +372,7 @@ export default function USMap() {
         <StateLabels data={alaska} />
 
         {nationalParks.map((park) => (
-          <Marker key={park.name} position={park.position}>
+          <Marker key={park.name} position={park.position} icon={parkIcon}>
             <Popup>{park.name}</Popup>
           </Marker>
         ))}
@@ -365,6 +384,7 @@ export default function USMap() {
             center={[63, -152]}
             zoom={2}
             data={alaska}
+            parks={alaskaParks}
             padding={[2, 2]}
             isActive={selectedState === "Alaska"}
             onClick={focusAlaska}
@@ -375,6 +395,7 @@ export default function USMap() {
             center={[20.5, -157.5]}
             zoom={6}
             data={hawaii}
+            parks={hawaiiParks}
             isActive={selectedState === "Hawaii"}
             onClick={() => focusState("Hawaii", getCollectionBounds(hawaii))}
           />
