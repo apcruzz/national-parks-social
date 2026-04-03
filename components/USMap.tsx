@@ -111,12 +111,7 @@ const alaskaBounds = L.latLngBounds(
   [50, -180],
   [72, -128]
 );
-const parkIcon = L.icon({
-  iconUrl: "/park-marker.png",
-  iconSize: [28, 28],
-  iconAnchor: [14, 28],
-  popupAnchor: [0, -28],
-});
+const parkIconCache = new Map<string, L.Icon>();
 
 type InsetMapProps = {
   center: [number, number];
@@ -146,6 +141,24 @@ function getStateStyle(selectedState: string | null) {
         : "#d6d3d1",
     fillOpacity: 1,
   });
+}
+
+function getParkIcon(iconUrl?: string) {
+  if (!iconUrl) return undefined;
+
+  const cachedIcon = parkIconCache.get(iconUrl);
+  if (cachedIcon) return cachedIcon;
+
+  const icon = L.icon({
+    iconUrl,
+    iconSize: [86, 86],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  });
+
+  parkIconCache.set(iconUrl, icon);
+
+  return icon;
 }
 
 function FitInsetBounds({
@@ -214,6 +227,30 @@ function StateLabels({ data }: { data: FeatureCollection }) {
   );
 }
 
+function ParkMarker({
+  markerKey,
+  park,
+}: {
+  markerKey: string;
+  park: (typeof nationalParks)[number];
+}) {
+  const icon = getParkIcon(park.icon);
+
+  if (icon) {
+    return (
+      <Marker key={markerKey} position={park.position} icon={icon}>
+        <Popup>{park.name}</Popup>
+      </Marker>
+    );
+  }
+
+  return (
+    <Marker key={markerKey} position={park.position}>
+      <Popup>{park.name}</Popup>
+    </Marker>
+  );
+}
+
 function InsetMap({
   center,
   zoom,
@@ -253,13 +290,7 @@ function InsetMap({
         })} />
         <StateLabels data={data} />
         {parks.map((park) => (
-          <Marker
-            key={`${park.name}-inset`}
-            position={park.position}
-            icon={parkIcon}
-          >
-            <Popup>{park.name}</Popup>
-          </Marker>
+          <ParkMarker key={`${park.name}-inset`} markerKey={`${park.name}-inset`} park={park} />
         ))}
       </MapContainer>
     </button>
@@ -372,9 +403,7 @@ export default function USMap() {
         <StateLabels data={alaska} />
 
         {nationalParks.map((park) => (
-          <Marker key={park.name} position={park.position} icon={parkIcon}>
-            <Popup>{park.name}</Popup>
-          </Marker>
+          <ParkMarker key={park.name} markerKey={park.name} park={park} />
         ))}
       </MapContainer>
 
