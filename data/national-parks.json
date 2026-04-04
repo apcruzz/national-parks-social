@@ -14,6 +14,7 @@
       38.725055,
       -109.595467
     ]
+    ,"icon": "/Arches.png"
   },
   {
     "name": "Badlands",
@@ -53,7 +54,7 @@
     "position": [
       37.57069,
       -112.178679
-    ]
+    ], "icon": "Bryce1.png"
   },
   {
     "name": "Canyonlands",
@@ -181,7 +182,7 @@
     "position": [
       36.307889,
       -112.783479
-    ]
+    ], "icon": "/GrandCanyon1.png"
   },
   {
     "name": "Grand Teton",
@@ -374,7 +375,7 @@
     "position": [
       34.974643,
       -109.772657
-    ]
+    ], "icon": "/Petrified1.png"
   },
   {
     "name": "Pinnacles",
@@ -406,7 +407,7 @@
     "position": [
       32.228049,
       -110.871175
-    ]
+    ], "icon": "/Saguaro.png"
   },
   {
     "name": "Sequoia",
@@ -414,7 +415,7 @@
     "position": [
       36.496098,
       -118.577185
-    ]
+    ], "icon": "/Sequoia1.png"
   },
   {
     "name": "Shenandoah",
@@ -486,7 +487,8 @@
     "position": [
       37.839349,
       -119.542841
-    ]
+    ],
+    "icon": "/Yosemite1.png"
   },
   {
     "name": "Zion",

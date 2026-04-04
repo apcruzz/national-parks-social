@@ -151,8 +151,8 @@ function getParkIcon(iconUrl?: string) {
 
   const icon = L.icon({
     iconUrl,
-    iconSize: [86, 86],
-    iconAnchor: [18, 36],
+    iconSize: [96, 96],
+    iconAnchor: [48, 56],
     popupAnchor: [0, -36],
   });
 
