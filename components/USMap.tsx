@@ -143,20 +143,29 @@ function getStateStyle(selectedState: string | null) {
   });
 }
 
-function getParkIcon(iconUrl?: string) {
-  if (!iconUrl) return undefined;
+function getParkIcon(park: (typeof nationalParks)[number]) {
+  if (!park.icon) return undefined;
 
-  const cachedIcon = parkIconCache.get(iconUrl);
-  if (cachedIcon) return cachedIcon;
-
-  const icon = L.icon({
-    iconUrl,
-    iconSize: [96, 96],
-    iconAnchor: [48, 56],
-    popupAnchor: [0, -36],
+  const cacheKey = JSON.stringify({
+    icon: park.icon,
+    iconSize: park.iconSize,
+    iconAnchor: park.iconAnchor,
+    popupAnchor: park.popupAnchor,
   });
 
-  parkIconCache.set(iconUrl, icon);
+  const cachedIcon = parkIconCache.get(cacheKey);
+  if (cachedIcon) return cachedIcon;
+
+  const [width, height] = park.iconSize ?? [36, 36];
+
+  const icon = L.icon({
+    iconUrl: park.icon,
+    iconSize: [width, height],
+    iconAnchor: park.iconAnchor ?? [width / 2, height],
+    popupAnchor: park.popupAnchor ?? [0, -height],
+  });
+
+  parkIconCache.set(cacheKey, icon);
 
   return icon;
 }
@@ -234,7 +243,7 @@ function ParkMarker({
   markerKey: string;
   park: (typeof nationalParks)[number];
 }) {
-  const icon = getParkIcon(park.icon);
+  const icon = getParkIcon(park);
 
   if (icon) {
     return (

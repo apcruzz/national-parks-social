@@ -271,7 +271,10 @@
       33.899774,
       -115.860134
     ],
-    "icon": "/Joshua.png"
+    "icon": "/Joshua.png",
+    "iconSize": [96, 96],
+    "iconAnchor": [48, 56],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Katmai",

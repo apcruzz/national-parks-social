@@ -5,6 +5,9 @@ export type Park = {
   state: string;
   position: [number, number];
   icon?: string;
+  iconSize?: [number, number];
+  iconAnchor?: [number, number];
+  popupAnchor?: [number, number];
 };
 
 export const nationalParks = nationalParksData as Park[];
