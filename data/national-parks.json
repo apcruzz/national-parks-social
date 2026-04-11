@@ -14,7 +14,10 @@
       38.725055,
       -109.595467
     ]
-    ,"icon": "/Arches.png"
+    ,"icon": "/Arches.png",
+    "iconSize": [96, 136],
+    "iconAnchor": [48, 106],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Badlands",
@@ -54,7 +57,10 @@
     "position": [
       37.57069,
       -112.178679
-    ], "icon": "Bryce1.png"
+    ], "icon": "Bryce.png",
+    "iconSize": [96, 96],
+    "iconAnchor": [38, 76],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Canyonlands",
@@ -182,7 +188,11 @@
     "position": [
       36.307889,
       -112.783479
-    ], "icon": "/Grand Canyon.png"
+    ], "icon": "/GrandCanyonFinal.png",
+    "iconSize": [106, 126],
+    "iconAnchor": [58, 56],
+    "popupAnchor": [0, -36]
+
   },
   {
     "name": "Grand Teton",
@@ -378,7 +388,10 @@
     "position": [
       34.974643,
       -109.772657
-    ], "icon": "/Petrified1.png"
+    ], "icon": "/Petrified1.png",
+    "iconSize": [96, 140],
+    "iconAnchor": [48, 86],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Pinnacles",
@@ -410,7 +423,10 @@
     "position": [
       32.228049,
       -110.871175
-    ], "icon": "/Saguaro.png"
+    ], "icon": "/Saguaro.png",
+    "iconSize": [116, 116],
+    "iconAnchor": [58, 56],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Sequoia",
@@ -418,7 +434,10 @@
     "position": [
       36.496098,
       -118.577185
-    ], "icon": "/Sequoia1.png"
+    ], "icon": "/Sequoia1.png",
+    "iconSize": [96, 96],
+    "iconAnchor": [48, 56],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Shenandoah",
@@ -491,7 +510,10 @@
       37.839349,
       -119.542841
     ],
-    "icon": "/Yosemite1.png"
+    "icon": "/Yosemite1.png",
+    "iconSize": [116, 196],
+    "iconAnchor": [68, 146],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Zion",
@@ -499,6 +521,10 @@
     "position": [
       37.322823,
       -113.045728
-    ]
+    ],
+    "icon": "/Zion.png",
+    "iconSize": [126, 126],
+    "iconAnchor": [68, 96],
+    "popupAnchor": [0, -36]
   }
 ]
