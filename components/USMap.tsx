@@ -112,6 +112,15 @@ const alaskaBounds = L.latLngBounds(
   [72, -128]
 );
 const parkIconCache = new Map<string, L.Icon>();
+const mapColors = {
+  stroke: "#465a4b",
+  fill: "#d7e7cc",
+  fillActive: "#9dc08b",
+  water: "#c9e3ea",
+  panel: "#f6efe2",
+  panelBorder: "#d9ccb5",
+  text: "#273229",
+};
 
 type InsetMapProps = {
   center: [number, number];
@@ -132,15 +141,19 @@ function getCollectionBounds(data: FeatureCollection) {
 }
 
 function getStateStyle(selectedState: string | null) {
-  return (feature?: Feature) => ({
-    color: "#444",
-    weight: feature?.properties?.name === selectedState ? 2 : 1,
-    fillColor:
-      feature?.properties?.name === selectedState
-        ? "#b8d8b8"
-        : "#d6d3d1",
-    fillOpacity: 1,
-  });
+  return function stateStyle(feature?: Feature) {
+    const stateName = feature?.properties?.name;
+
+    return {
+      color: mapColors.stroke,
+      weight: stateName === selectedState ? 2 : 1,
+      fillColor:
+        stateName === selectedState
+          ? mapColors.fillActive
+          : mapColors.fill,
+      fillOpacity: 1,
+    };
+  };
 }
 
 function getParkIcon(park: (typeof nationalParks)[number]) {
@@ -292,9 +305,9 @@ function InsetMap({
       >
         <FitInsetBounds data={data} padding={padding} />
         <GeoJSON data={data} style={() => ({
-          color: "#444",
+          color: mapColors.stroke,
           weight: 1,
-          fillColor: isActive ? "#b8d8b8" : "#d6d3d1",
+          fillColor: isActive ? mapColors.fillActive : mapColors.fill,
           fillOpacity: 1,
         })} />
         <StateLabels data={data} />
@@ -352,12 +365,20 @@ export default function USMap() {
   return (
     <div className="relative h-full w-full">
       {selectedState && (
-        <div className="absolute left-6 top-6 z-[500] flex items-center gap-3 rounded-lg bg-white px-4 py-2 shadow">
+        <div
+          className="absolute left-6 top-6 z-[500] flex items-center gap-3 rounded-lg px-4 py-2 shadow"
+          style={{
+            backgroundColor: mapColors.panel,
+            border: `1px solid ${mapColors.panelBorder}`,
+            color: mapColors.text,
+          }}
+        >
           <span>{selectedState}</span>
           <button
             type="button"
             onClick={resetMap}
-            className="rounded border border-[#d6d3d1] px-2 py-1 text-sm"
+            className="rounded px-2 py-1 text-sm"
+            style={{ border: `1px solid ${mapColors.panelBorder}` }}
           >
             Back to US
           </button>
@@ -370,7 +391,8 @@ export default function USMap() {
         ref={mapRef}
         scrollWheelZoom={true}
         zoomControl={false}
-        className="h-full w-full bg-[#f5f1ea]"
+        className="h-full w-full"
+        style={{ backgroundColor: mapColors.water }}
         maxBounds={activeBounds}
       >
         <UpdateMapBounds bounds={activeBounds} />

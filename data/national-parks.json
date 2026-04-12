@@ -68,7 +68,10 @@
     "position": [
       38.233999,
       -109.949595
-    ]
+    ], "icon": "/CanyonLands copy.png",
+    "iconSize": [96, 96],
+    "iconAnchor": [38, 56],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Capitol Reef",
@@ -76,7 +79,10 @@
     "position": [
       38.066514,
       -111.142734
-    ]
+    ], "icon": "/Capitol Reef.png",
+    "iconSize": [96, 116],
+    "iconAnchor": [38, 66],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Carlsbad Caverns",
@@ -124,7 +130,10 @@
     "position": [
       36.470232,
       -117.138803
-    ]
+    ], "icon": "/DeathValley.png",
+    "iconSize": [126, 96],
+    "iconAnchor": [58, 66],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Denali",
@@ -216,7 +225,10 @@
     "position": [
       37.79446,
       -105.613013
-    ]
+    ], "icon": "/sanddunes.png",
+    "iconSize": [126, 96],
+    "iconAnchor": [58, 66],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Great Smoky Mountains",
@@ -356,7 +368,10 @@
     "position": [
       46.906031,
       -121.786218
-    ]
+    ], "icon": "/MountRainier.png",
+    "iconSize": [126, 186],
+    "iconAnchor": [68, 96],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "National Park of American Samoa",
@@ -399,7 +414,10 @@
     "position": [
       36.486284,
       -121.173379
-    ]
+    ], "icon": "/pinnacles.png",
+    "iconSize": [126, 96],
+    "iconAnchor": [68, 56],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Redwood",
@@ -407,7 +425,10 @@
     "position": [
       41.460686,
       -124.004459
-    ]
+    ], "icon": "/Redwoods.png",
+    "iconSize": [126, 116],
+    "iconAnchor": [48, 56],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Rocky Mountain",
@@ -434,9 +455,9 @@
     "position": [
       36.496098,
       -118.577185
-    ], "icon": "/Sequoia1.png",
-    "iconSize": [96, 96],
-    "iconAnchor": [48, 56],
+    ], "icon": "/sequoia.png",
+    "iconSize": [126, 126],
+    "iconAnchor": [58, 116],
     "popupAnchor": [0, -36]
   },
   {
