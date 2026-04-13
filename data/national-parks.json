@@ -98,7 +98,10 @@
     "position": [
       33.848661,
       -119.74032
-    ]
+    ], "icon": "/Channelislands.png",
+    "iconSize": [126, 116],
+    "iconAnchor": [68, 79],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Congaree",
@@ -226,8 +229,8 @@
       37.79446,
       -105.613013
     ], "icon": "/sanddunes.png",
-    "iconSize": [126, 96],
-    "iconAnchor": [58, 66],
+    "iconSize": [106, 106],
+    "iconAnchor": [58, 76],
     "popupAnchor": [0, -36]
   },
   {
@@ -244,7 +247,10 @@
     "position": [
       31.90681,
       -104.868278
-    ]
+    ], "icon": "/Guadalupe.png",
+    "iconSize": [186, 116],
+    "iconAnchor": [98, 56],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Haleakala",
@@ -360,7 +366,10 @@
     "position": [
       37.253474,
       -108.447174
-    ]
+    ], "icon": "/MesaVerde.png",
+    "iconSize": [106, 96],
+    "iconAnchor": [28, 62],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Mount Rainier",
@@ -387,7 +396,10 @@
     "position": [
       48.685186,
       -121.136102
-    ]
+    ], "icon": "/NorthCas.png",
+    "iconSize": [186, 186],
+    "iconAnchor": [78, 86],
+    "popupAnchor": [0, -36]
   },
   {
     "name": "Olympic",

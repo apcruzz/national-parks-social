@@ -114,12 +114,64 @@ const alaskaBounds = L.latLngBounds(
 const parkIconCache = new Map<string, L.Icon>();
 const mapColors = {
   stroke: "#465a4b",
-  fill: "#d7e7cc",
+  fill: "#d7d7d7",
   fillActive: "#9dc08b",
   water: "#c9e3ea",
   panel: "#f6efe2",
   panelBorder: "#d9ccb5",
   text: "#273229",
+};
+const neutralStateFills: Record<string, string> = {
+  Alabama: "#c8cfae",
+  Alaska: "#adc0ae",
+  Arizona: "#d7bea8",
+  Arkansas: "#cfd6bb",
+  California: "#d5c0ae",
+  Colorado: "#c2cda8",
+  Connecticut: "#ead7c8",
+  Delaware: "#e1d1bf",
+  Florida: "#d5d7b8",
+  Georgia: "#c7d1ae",
+  Hawaii: "#e3ccb8",
+  Idaho: "#b7c7ae",
+  Illinois: "#ddd5bf",
+  Indiana: "#e5dbc8",
+  Iowa: "#d2d7bc",
+  Kansas: "#ddcfb6",
+  Kentucky: "#c2cda8",
+  Louisiana: "#d5c2ab",
+  Maine: "#d8ddc3",
+  Maryland: "#e3d6c5",
+  Massachusetts: "#e7dccc",
+  Michigan: "#c4cfb3",
+  Minnesota: "#c9d4ba",
+  Mississippi: "#d8c7b3",
+  Missouri: "#d1d4b7",
+  Montana: "#bac8aa",
+  Nebraska: "#dccfb8",
+  Nevada: "#d2bea7",
+  "New Hampshire": "#d6dbc2",
+  "New Jersey": "#e4d6c6",
+  "New Mexico": "#d8b79d",
+  "New York": "#d8ddc5",
+  "North Carolina": "#d3d6ba",
+  "North Dakota": "#c5cfb5",
+  Ohio: "#ddd8c3",
+  Oklahoma: "#d7ccb4",
+  Oregon: "#bfd0b5",
+  Pennsylvania: "#e1dbc7",
+  "Rhode Island": "#ebdfcf",
+  "South Carolina": "#d8d7ba",
+  "South Dakota": "#d3cfb1",
+  Tennessee: "#ced4b8",
+  Texas: "#d4c1ae",
+  Utah: "#d6c2a8",
+  Vermont: "#d3dac2",
+  Virginia: "#d7d9bf",
+  Washington: "#bfd0b4",
+  "West Virginia": "#b7c5a9",
+  Wisconsin: "#d0d7c0",
+  Wyoming: "#cbc9ab",
 };
 
 type InsetMapProps = {
@@ -143,6 +195,7 @@ function getCollectionBounds(data: FeatureCollection) {
 function getStateStyle(selectedState: string | null) {
   return function stateStyle(feature?: Feature) {
     const stateName = feature?.properties?.name;
+    const fillColor = neutralStateFills[stateName ?? ""] ?? mapColors.fill;
 
     return {
       color: mapColors.stroke,
@@ -150,7 +203,7 @@ function getStateStyle(selectedState: string | null) {
       fillColor:
         stateName === selectedState
           ? mapColors.fillActive
-          : mapColors.fill,
+          : fillColor,
       fillOpacity: 1,
     };
   };
